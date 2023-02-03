@@ -43,6 +43,7 @@ secure_enclave.edl: secure_enclave/secure_enclave.edl
 ## Additional automake variables
 ##
 #AM_CPPFLAGS += -g -Og
+CXXFLAGS += -std=c++17
 
 
 AM_CFLAGS = -DUSER_SPACE -O2 -rdynamic -Wl,--no-as-needed -lSegFault -DSGXWALLET_VERSION="$(WALLET_VERSION)"
@@ -62,8 +63,8 @@ CLEANFILES = $(COMMON_ENCLAVE_SRC) secure_enclave.edl secure_enclave.signed.so
 
 ## The build target
 
-bin_PROGRAMS = sgxwallet testw sgx_util
-
+# bin_PROGRAMS = sgxwallet testw sgx_util
+bin_PROGRAMS = sgxwallet
 
 ## You can't use $(wildcard ...) with automake so all source files
 ## have to be explicitly listed.
