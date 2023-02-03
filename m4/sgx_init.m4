@@ -46,10 +46,12 @@ AC_DEFUN([SGX_INIT],[
 			AC_SUBST(LIBS_HW_SIMU, ["-lsgx_urts_sim -lsgx_uae_service_sim"])
 			AC_DEFINE(SGX_HW_SIM, 1, [Enable hardware simulation mode])
 		], [
-			AC_SUBST(SGX_TRTS_LIB, [sgx_trts])
-			AC_SUBST(SGX_TSERVICE_LIB, [sgx_tservice])
-			AC_SUBST(SGX_UAE_SERVICE_LIB, [sgx_uae_service])
-			AC_SUBST(SGX_URTS_LIB, [sgx_urts])
+			AC_SUBST(SGX_TRTS_LIB, [sgx_trts_sim])
+			AC_SUBST(SGX_TSERVICE_LIB, [sgx_tservice_sim])
+			AC_SUBST(SGX_UAE_SERVICE_LIB, [sgx_uae_service_sim])
+			AC_SUBST(SGX_URTS_LIB, [sgx_urts_sim])
+			AC_SUBST(LIBS_HW_SIMU, ["-lsgx_urts_sim -lsgx_uae_service_sim"])
+			AC_DEFINE(SGX_HW_SIM, 1, [Enable hardware simulation mode])
 		]
 	)
 	AS_IF([test "x$_sgxbuild" = "xdebug"], [
@@ -77,9 +79,7 @@ AC_DEFUN([SGX_INIT],[
 
 	AS_IF([test "x$SGXSDK" = "xenv"], [SGXSDK=$SGX_SDK],
 		[test "x$SGXSDK" != "xdetect"], [],
-		[test -d /opt/intel/sgxsdk], [SGXSDK=/opt/intel/sgxsdk],
-		[test -d ~/sgxsdk], [SGXSDK=~/sgxsdk],
-		[test -d ${PWD}/sgx-sdk-build/sgxsdk], [SGXSDK=${PWD}/sgx-sdk-build/sgxsdk],
+		[test -d ${PWD}/../../SGXSan/install], [SGXSDK=${PWD}/../../SGXSan/install],
 		[AC_MSG_ERROR([Can't detect your Intel SGX SDK installation directory])])
 
 	AC_SUBST(SGXSDK)
@@ -126,26 +126,27 @@ AC_DEFUN([SGX_INIT],[
 	ac_cv_sgx_enclave_ldadd="-Wl,--no-undefined -Wl,--whole-archive -lsgx_trts -Wl,--no-whole-archive -Wl,--start-group -lsgx_tstdc -lsgx_tcrypto -lsgx_tservice_lib -Wl,--end-group -Wl,-Bstatic -Wl,-Bsymbolic -Wl,-pie,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0"
 
 
+
 	dnl Substitutions for building a trusted library
 
 	AC_SUBST(SGX_TLIB_CFLAGS,
-		["-nostdinc -fvisibility=hidden -fpie -fstack-protector"])
+		["-fvisibility=hidden -fPIC -fstack-protector"])
 	AC_SUBST(SGX_TLIB_CPPFLAGS,
 		["-I\$(SGXSDK_INCDIR) -I\$(SGXSDK_INCDIR)/tlibc"])
 	AC_SUBST(SGX_TLIB_CXXFLAGS,
-		["-nostdinc++ -fvisibility=hidden -fpie -fstack-protector"])
+		["-fvisibility=hidden -fPIC -fstack-protector"])
 
 	dnl Substitutions for building an enclave
 
 	AC_SUBST(SGX_ENCLAVE_CFLAGS,
-	 	["-nostdinc -fvisibility=hidden -fpie -ffunction-sections -fdata-sections -fstack-protector"])
+	 	["-fvisibility=hidden -fPIC -ffunction-sections -fdata-sections -fstack-protector"])
 	AC_SUBST(SGX_ENCLAVE_CPPFLAGS, 
 		["-I\$(SGXSDK_INCDIR) -I\$(SGXSDK_INCDIR)/tlibc"])
-	AC_SUBST(SGX_ENCLAVE_CXXFLAGS, ["-nostdinc++ -fvisibility=hidden -fpie -ffunction-sections -fdata-sections -fstack-protector"])
+	AC_SUBST(SGX_ENCLAVE_CXXFLAGS, ["-fvisibility=hidden -fPIC -ffunction-sections -fdata-sections -fstack-protector"])
 	AC_SUBST(SGX_ENCLAVE_LDFLAGS,
-		["-nostdlib -nodefaultlibs -nostartfiles -L\$(SGXSDK_LIBDIR)"])
+		["-L\$(SGXSDK_LIBDIR)"])
 	AC_SUBST(SGX_ENCLAVE_LDADD,
-		["-Wl,--no-undefined -Wl,--whole-archive -l\$(SGX_TRTS_LIB) -Wl,--no-whole-archive -Wl,--start-group \$(SGX_EXTRA_TLIBS) -lsgx_tstdc -lsgx_tcrypto -l\$(SGX_TSERVICE_LIB) -Wl,--end-group -Wl,-Bstatic -Wl,-Bsymbolic -Wl,-pie,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0"])
+		["-Wl,--whole-archive -lSGXSanRTEnclave -l\$(SGX_TRTS_LIB) -Wl,--no-whole-archive -Wl,--start-group \$(SGX_EXTRA_TLIBS) -lsgx_tcrypto -l\$(SGX_TSERVICE_LIB) -Wl,--end-group -Wl,-Bsymbolic -Wl,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0 -fuse-ld=lld -Wl,-save-temps -Wl,--lto-legacy-pass-manager -Wl,-mllvm=-load=\$(SGXSDK_LIBDIR)/libSGXSanPass.so -Wl,-mllvm=-enable-slsan=false -Wl,-mllvm=--stat=false --shared"])
 
 	])
 

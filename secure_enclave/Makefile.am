@@ -51,7 +51,7 @@ include $(top_srcdir)/build-aux/sgx_enclave.am
 ENCLAVE=secure_enclave
 ENCLAVE_CONFIG=$(ENCLAVE).config.xml
 ENCLAVE_KEY=test_insecure_private_key.pem       #$(ENCLAVE)_private.pem
-
+SGX_SIGN=/opt/intel/sgxsdk/bin/x64/sgx_sign
 
 ## Provide additional flags to sgx_sign when signing the enclave.
 ## This is almost never necessary. If you don't know if you need
@@ -62,7 +62,7 @@ ENCLAVE_KEY=test_insecure_private_key.pem       #$(ENCLAVE)_private.pem
 
 ## Additional Automake flags needed to build the enclave.
 
-AM_CPPFLAGS += -O2 -Wall -Wno-implicit-function-declaration $(TGMP_CPPFLAGS) -I./third_party/SCIPR -I../third_party/SCIPR -I../sgx-sdk-build/sgxsdk/include/libcxx 
+AM_CPPFLAGS += -fPIC -flto -fno-discard-value-names -O2 -Wall -Wno-implicit-function-declaration $(TGMP_CPPFLAGS) -I./third_party/SCIPR -I../third_party/SCIPR -I../sgx-sdk-build/sgxsdk/include/libcxx
 AM_CXXFLAGS += -fno-builtin -fstack-protector-strong
 
 
@@ -113,7 +113,7 @@ secure_enclave_LDADD = @SGX_ENCLAVE_LDADD@
 ## --startgroup and --endgroup flags. (This would be where you'd add
 ## SGXSSL libraries, and your trusted c++ library
 
-SGX_EXTRA_TLIBS=-lsgx_tgmp -lsgx_tservice -lsgx_urts -lsgx_tcxx 
+SGX_EXTRA_TLIBS=-lsgx_tgmp -lsgx_tservice_sim -lsgx_trts_sim
 
 
 
