@@ -92,7 +92,7 @@ void SGXWallet::signalHandler( int signalNo ) {
 }
 
 
-int main(int argc, char *argv[]) {
+/*int main(int argc, char *argv[]) {
     bool enterBackupKeyOption  = false;
     bool useHTTPSOption = true;
     bool printDebugInfoOption = false;
@@ -235,4 +235,4 @@ int main(int argc, char *argv[]) {
     exitAll();
     spdlog::info("Exiting with exit code {} and signal", exitCode, signal);
     return exitCode;
-}
+} */

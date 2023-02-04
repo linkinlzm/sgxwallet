@@ -16,8 +16,14 @@ SGXSSL_LIBDIR=@SGXSSL_LIBDIR@
 if SGX_ENABLED
 ## All Intel SGX applications need at least these flags
 
-AM_CPPFLAGS = -I$(SGXSDK_INCDIR)
-AM_LDFLAGS = -L$(SGXSDK_LIBDIR)
+AM_CPPFLAGS = -I$(SGXSDK_INCDIR) -fPIC \
+	-flegacy-pass-manager \
+	-Xclang -load -Xclang $(SGXSDK)/lib64/libSGXFuzzerPass.so \
+	-fsanitize-coverage=inline-8bit-counters,bb,no-prune,pc-table,trace-cmp
+
+AM_LDFLAGS = -L$(SGXSDK_LIBDIR) -Wl,-rpath=$(SGXSDK_LIBDIR) \
+	-Wl,-whole-archive -lSGXSanRTApp -Wl,-no-whole-archive \
+	-rdynamic
 else
 AM_CPPFLAGS = 
 AM_LDFLAGS = 
@@ -33,5 +39,5 @@ SGX_UAE_SERVICE_LIB=@SGX_UAE_SERVICE_LIB@
 
 if SGX_ENABLED
 %_u.h %_u.c: %.edl
-	$(SGX_EDGER8R) --search-path $(SGXSDK_INCDIR):${PWD}/intel-sgx-ssl/Linux/package/include $(SGX_EDGER8R_FLAGS) --untrusted $<
+	$(SGX_EDGER8R) --dump-parse ./Enclave.edl.json --search-path $(SGXSDK_INCDIR):${PWD}/intel-sgx-ssl/Linux/package/include $(SGX_EDGER8R_FLAGS) --untrusted $<
 endif
