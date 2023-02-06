@@ -93,8 +93,8 @@ assert subprocess.call(["bash", "-c", "./build.sh"]) == 0
 
 print("Install Linux SDK");
 
-#os.chdir(SCRIPTS_DIR)
-#assert subprocess.call(["bash", "-c", "./sgx_linux_x64_sdk_2.13.100.4.bin --prefix=" + topDir + "/sgx-sdk-build"]) == 0
+os.chdir(SCRIPTS_DIR)
+assert subprocess.call(["bash", "-c", "./sgx_linux_x64_sdk_2.13.100.4.bin --prefix=" + topDir + "/sgx-sdk-build"]) == 0
 
 print("Make GMP");
 
@@ -111,6 +111,9 @@ assert subprocess.call(["make", "clean"]) == 0
 
 os.chdir(topDir)
 assert subprocess.call(["cp", "third_party/gmp/sgx_tgmp.h.fixed", TGMP_BUILD_DIR + "/include/sgx_tgmp.h"]) ==  0  
+
+os.chdir(topDir)
+assert subprocess.call(["mv", "sgx-sdk-build", "sgx-sdk-build-old"]) ==  0
 
 os.chdir(topDir)
 print("Build successfull.")
