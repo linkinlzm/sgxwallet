@@ -130,23 +130,23 @@ AC_DEFUN([SGX_INIT],[
 	dnl Substitutions for building a trusted library
 
 	AC_SUBST(SGX_TLIB_CFLAGS,
-		["-fvisibility=hidden -fPIC -fstack-protector"])
+		["-fvisibility=hidden -fPIC -fstack-protector -flto -fno-discard-value-names -fsanitize-coverage=inline-8bit-counters,bb,no-prune,pc-table,trace-cmp -fprofile-instr-generate -fcoverage-mapping"])
 	AC_SUBST(SGX_TLIB_CPPFLAGS,
-		["-I\$(SGXSDK_INCDIR) -I\$(SGXSDK_INCDIR)/tlibc"])
+		["-I\$(SGXSDK_INCDIR) -I\$(SGXSDK_INCDIR)/tlibc -flto -fno-discard-value-names -fsanitize-coverage=inline-8bit-counters,bb,no-prune,pc-table,trace-cmp -fprofile-instr-generate -fcoverage-mapping"])
 	AC_SUBST(SGX_TLIB_CXXFLAGS,
-		["-fvisibility=hidden -fPIC -fstack-protector"])
+		["-fvisibility=hidden -fPIC -fstack-protector -flto -fno-discard-value-names -fsanitize-coverage=inline-8bit-counters,bb,no-prune,pc-table,trace-cmp -fprofile-instr-generate -fcoverage-mapping"])
 
 	dnl Substitutions for building an enclave
 
 	AC_SUBST(SGX_ENCLAVE_CFLAGS,
-	 	["-fvisibility=hidden -fPIC -ffunction-sections -fdata-sections -fstack-protector"])
+	 	["-fvisibility=hidden -fPIC -ffunction-sections -fdata-sections -fstack-protector -flto -fno-discard-value-names -fsanitize-coverage=inline-8bit-counters,bb,no-prune,pc-table,trace-cmp -fprofile-instr-generate -fcoverage-mapping"])
 	AC_SUBST(SGX_ENCLAVE_CPPFLAGS, 
 		["-I\$(SGXSDK_INCDIR) -I\$(SGXSDK_INCDIR)/tlibc"])
-	AC_SUBST(SGX_ENCLAVE_CXXFLAGS, ["-fvisibility=hidden -fPIC -ffunction-sections -fdata-sections -fstack-protector"])
+	AC_SUBST(SGX_ENCLAVE_CXXFLAGS, ["-fvisibility=hidden -fPIC -ffunction-sections -fdata-sections -fstack-protector -flto -fno-discard-value-names -fsanitize-coverage=inline-8bit-counters,bb,no-prune,pc-table,trace-cmp -fprofile-instr-generate -fcoverage-mapping"])
 	AC_SUBST(SGX_ENCLAVE_LDFLAGS,
 		["-L\$(SGXSDK_LIBDIR)"])
 	AC_SUBST(SGX_ENCLAVE_LDADD,
-		["-Wl,--whole-archive -lSGXSanRTEnclave -l\$(SGX_TRTS_LIB) -Wl,--no-whole-archive -Wl,--start-group \$(SGX_EXTRA_TLIBS) -lsgx_tcrypto -l\$(SGX_TSERVICE_LIB) -Wl,--end-group -Wl,-Bsymbolic -Wl,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0 -fuse-ld=lld -Wl,-save-temps -Wl,--lto-legacy-pass-manager -Wl,-mllvm=-load=\$(SGXSDK_LIBDIR)/libSGXSanPass.so -Wl,-mllvm=-enable-slsan=false -Wl,-mllvm=--stat=false --shared"])
+		["-Wl,--whole-archive -lSGXSanRTEnclave -l\$(SGX_TRTS_LIB) -Wl,--no-whole-archive -Wl,--start-group \$(SGX_EXTRA_TLIBS) -lsgx_tcrypto -l\$(SGX_TSERVICE_LIB) -Wl,--end-group -Wl,-Bsymbolic -Wl,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0 -fuse-ld=lld -Wl,-save-temps -Wl,--lto-legacy-pass-manager -Wl,-mllvm=-load=\$(SGXSDK_LIBDIR)/libSGXSanPass.so -Wl,-mllvm=-enable-slsan=false -Wl,-mllvm=--stat=false --shared -fprofile-instr-generate"])
 
 	])
 
