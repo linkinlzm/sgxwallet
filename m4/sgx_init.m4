@@ -79,7 +79,7 @@ AC_DEFUN([SGX_INIT],[
 
 	AS_IF([test "x$SGXSDK" = "xenv"], [SGXSDK=$SGX_SDK],
 		[test "x$SGXSDK" != "xdetect"], [],
-		[test -d ${PWD}/../../SGXSan/install], [SGXSDK=${PWD}/../../SGXSan/install],
+		[test -d ${PWD}/../../install], [SGXSDK=${PWD}/../../install],
 		[AC_MSG_ERROR([Can't detect your Intel SGX SDK installation directory])])
 
 	AC_SUBST(SGXSDK)
