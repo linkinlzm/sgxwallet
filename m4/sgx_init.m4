@@ -77,9 +77,7 @@ AC_DEFUN([SGX_INIT],[
 
 	AS_IF([test "x$SGXSDK" = "xenv"], [SGXSDK=$SGX_SDK],
 		[test "x$SGXSDK" != "xdetect"], [],
-		[test -d /opt/intel/sgxsdk], [SGXSDK=/opt/intel/sgxsdk],
-		[test -d ~/sgxsdk], [SGXSDK=~/sgxsdk],
-		[test -d ${PWD}/sgx-sdk-build/sgxsdk], [SGXSDK=${PWD}/sgx-sdk-build/sgxsdk],
+		[test -d ${PWD}/../../install], [SGXSDK=${PWD}/../../install],
 		[AC_MSG_ERROR([Can't detect your Intel SGX SDK installation directory])])
 
 	AC_SUBST(SGXSDK)
@@ -123,7 +121,7 @@ AC_DEFUN([SGX_INIT],[
 	ac_cv_sgx_tlib_cppflags="-I${ac_cv_sgx_sdk_incdir} -I${ac_cv_sgx_sdk_incdir}/tlibc"
 	ac_cv_sgx_tlib_cxxflags="-nostdinc++ -fvisibility=hidden -fpie -fstack-protector"
 	ac_cv_sgx_enclave_ldflags="-nostdlib -nodefaultlibs -nostartfiles -L${ac_cv_sgx_sdk_libdir}"
-	ac_cv_sgx_enclave_ldadd="-Wl,--no-undefined -Wl,--whole-archive -lsgx_trts -Wl,--no-whole-archive -Wl,--start-group -lsgx_tstdc -lsgx_tcrypto -lsgx_tservice_lib -Wl,--end-group -Wl,-Bstatic -Wl,-Bsymbolic -Wl,-pie,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0"
+	ac_cv_sgx_enclave_ldadd="-Wl,--no-undefined -Wl,--whole-archive -lSGXSanRTEnclave -lsgx_pthread -lsgx_trts -Wl,--no-whole-archive -Wl,--start-group -lsgx_tstdc -lsgx_tcrypto -lsgx_tservice_lib -Wl,--end-group -Wl,-Bstatic -Wl,-Bsymbolic -Wl,-pie,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0"
 
 
 	dnl Substitutions for building a trusted library
@@ -145,7 +143,7 @@ AC_DEFUN([SGX_INIT],[
 	AC_SUBST(SGX_ENCLAVE_LDFLAGS,
 		["-nostdlib -nodefaultlibs -nostartfiles -L\$(SGXSDK_LIBDIR)"])
 	AC_SUBST(SGX_ENCLAVE_LDADD,
-		["-Wl,--no-undefined -Wl,--whole-archive -l\$(SGX_TRTS_LIB) -Wl,--no-whole-archive -Wl,--start-group \$(SGX_EXTRA_TLIBS) -lsgx_tstdc -lsgx_tcrypto -l\$(SGX_TSERVICE_LIB) -Wl,--end-group -Wl,-Bstatic -Wl,-Bsymbolic -Wl,-pie,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0"])
+		["-Wl,--no-undefined -Wl,--whole-archive -lSGXSanRTEnclave -lsgx_pthread -l\$(SGX_TRTS_LIB) -Wl,--no-whole-archive -Wl,--start-group \$(SGX_EXTRA_TLIBS) -lsgx_tstdc -lsgx_tcrypto -l\$(SGX_TSERVICE_LIB) -Wl,--end-group -Wl,-Bstatic -Wl,-Bsymbolic -Wl,-pie,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0 -fuse-ld=lld"])
 
 	])
 

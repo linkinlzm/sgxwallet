@@ -62,7 +62,13 @@ ENCLAVE_KEY=test_insecure_private_key.pem       #$(ENCLAVE)_private.pem
 
 ## Additional Automake flags needed to build the enclave.
 
-AM_CPPFLAGS += -O2 -Wall -Wno-implicit-function-declaration $(TGMP_CPPFLAGS) -I./third_party/SCIPR -I../third_party/SCIPR -I../sgx-sdk-build/sgxsdk/include/libcxx 
+AM_CPPFLAGS += -O2 -Wall -Wno-implicit-function-declaration $(TGMP_CPPFLAGS) -I./third_party/SCIPR -I../third_party/SCIPR -I../sgx-sdk-build/sgxsdk/include/libcxx -fno-discard-value-names \
+    -flegacy-pass-manager \
+	-Xclang -load -Xclang $(SGXSDK_LIBDIR)/libSGXFuzzerPass.so \
+    -mllvm -instrument-json=../InstrumentStatistics.json \
+	-mllvm --at-enclave=true \
+	-flegacy-pass-manager \
+	-Xclang -load -Xclang $(SGXSDK_LIBDIR)/libSGXSanPass.so
 AM_CXXFLAGS += -fno-builtin -fstack-protector-strong
 
 
