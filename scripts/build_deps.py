@@ -91,10 +91,10 @@ print("Build JSON");
 os.chdir(JSON_LIBS_DIR)
 assert subprocess.call(["bash", "-c", "./build.sh"]) == 0
 
-print("Install Linux SDK");
+#print("Install Linux SDK");
 
-os.chdir(SCRIPTS_DIR)
-assert subprocess.call(["bash", "-c", "./sgx_linux_x64_sdk_2.13.100.4.bin --prefix=" + topDir + "/sgx-sdk-build"]) == 0
+#os.chdir(SCRIPTS_DIR)
+#assert subprocess.call(["bash", "-c", "./sgx_linux_x64_sdk_2.13.100.4.bin --prefix=" + topDir + "/sgx-sdk-build"]) == 0
 
 print("Make GMP");
 
